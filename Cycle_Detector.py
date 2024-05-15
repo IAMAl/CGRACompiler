@@ -371,7 +371,7 @@ def TranslateNode(r_file_name, CyclicEdges):
     return CyclicEdges_
 
 
-def Main_CyckeDetector( r_file_path, r_file_name, w_file_path, w_file_name ):
+def Main_CycleDetector( r_file_path, r_file_name, w_file_path, w_file_name ):
 
     am_size, am = Preprocess(r_file_path="./", r_file_name=r_file_name)
 
