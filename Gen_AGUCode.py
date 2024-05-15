@@ -2,12 +2,11 @@ import utils.FileReader
 import utils.ProgReader
 import copy
 
-def ExtractNumber(element):
+def ExtractNumber( element ):
     """
     Extract Number (str) of Destination Register Index
     Register index number in LLVM-IR has prefix "%".
     """
-
     start_index = element.find('%') + 1
     end_index = element[start_index:].find(' ') + start_index
     number_str = element[start_index:end_index].strip()
@@ -16,7 +15,7 @@ def ExtractNumber(element):
     return number
 
 
-def FlattenList(nested_list):
+def FlattenList( nested_list ):
     """
     Flattening Nested List
 
@@ -26,7 +25,6 @@ def FlattenList(nested_list):
     Basic block can have multiple paths forming a nested list
     To generate IR-code in the basic block, it needs frattening the list before sorting.
     """
-
     flattened_list = []
     for item in nested_list:
         if isinstance(item, list):
@@ -36,12 +34,11 @@ def FlattenList(nested_list):
     return flattened_list
 
 
-def SortList(lst):
+def SortList( lst ):
     """
     Sorting LLVM-IR with Destination Register Index Number
     The sorting skips branch IR-code having "br" string.
     """
-
     result = []
     for list_ in lst:
         flattened_lst = FlattenList(list_)
@@ -60,7 +57,6 @@ def Parser( Paths_, mode ):
                         'dfg'       Data-Flow Graph
                         otherwise   Control-Flow Graph
     """
-
     if mode == 'dfg':
         Paths = []
         num = 0
@@ -132,7 +128,7 @@ def Parser( Paths_, mode ):
     return Paths
 
 
-def ReadDFG( r_file_path2="./", r_file_path="./", r_file_name="mvm", cfg_node_id="1"):
+def ReadDFG( r_file_path2="./", r_file_path="./", r_file_name="mvm", cfg_node_id="1" ):
     """
     Read Data-Flow Graph, its Node List, and its Nemonic List
 
@@ -141,7 +137,6 @@ def ReadDFG( r_file_path2="./", r_file_path="./", r_file_name="mvm", cfg_node_id
         r_file_name:    reading base file name
         cfg_node_id:    Cyclic Control-Flow Node-ID
     """
-
     r_path_file_name = r_file_name+"_"+cfg_node_id+"_bpath_st.txt"
     dfg_paths = FileReader(file_path=r_file_path2, file_name=r_path_file_name )
     DFG_Paths = Parser( dfg_paths, 'dfg' )
@@ -167,8 +162,7 @@ class Create_CFGNode:
     Role:
         Node having Data Structure for Control-Flow Graph.
     """
-
-    def __init__(self):
+    def __init__( self ):
         self.ID = ""
         self.StLdPaths = []
         self.NeighborNodes = []
@@ -179,14 +173,14 @@ class Create_CFGNode:
         self.read_ptr = 0
 
 
-    def ReadNeighborExplored(self):
+    def ReadNeighborExplored( self ):
         """
         Read Neighbor's Explored Flag
         """
         return self.NeighborNodes[1][1]
 
 
-    def ReadPathNo(self, Src, Dst, index):
+    def ReadPathNo( self, Src, Dst, index ):
         """
         Read Path Number
         """
@@ -228,57 +222,57 @@ class Create_CFGNode:
         return -1, Src, Dst, False
 
 
-    def ClrExplores(self):
+    def ClrExplores( self ):
         """
         Clear Explore Flag
         """
         for StLdPath in self.StLdPaths:
             StLdPath[1] = False
 
-    def ReadNumPaths(self):
+    def ReadNumPaths( self ):
         """
         Read Number of Paths in Node
         """
         return self.num_paths
 
-    def SetNodeID(self, ID):
+    def SetNodeID( self, ID ):
         """
         Set This Node's ID
         """
         self.ID = ID
 
-    def ReadNodeID(self):
+    def ReadNodeID( self ):
         """
         Read This Node's ID
         """
         return self.ID
 
-    def ReadNumNodes(self):
+    def ReadNumNodes( self ):
         """
         Read Number of Neighbor Nodes
         """
         return self.num_nodes
 
-    def SetExplored(self):
+    def SetExplored( self ):
         """
         Set Flag of Explored
             The flag is set at read node
         """
         self.Explored = True
 
-    def ClrExplored(self):
+    def ClrExplored( self ):
         """
         Clear Flag of ExploredX
         """
         self.Explored = False
 
-    def ReadExplored(self):
+    def ReadExplored( self ):
         """
         Read Flag of Explored
         """
         return self.Explored
 
-    def SetNeighborNode(self, node_id):
+    def SetNeighborNode( self, node_id ):
         """
         Set Neighbor Node's ID,
         Initialize Flag-Explored
@@ -286,7 +280,7 @@ class Create_CFGNode:
         self.NeighborNodes.append([node_id, False])
         self.num_nodes += 1
 
-    def SetNeigboorNode(self, node_id):
+    def SetNeigboorNode( self, node_id ):
         """
         Set Neighbor's Node-ID
         Set Valid Flag
@@ -295,7 +289,7 @@ class Create_CFGNode:
             if neighbor_node[0] == node_id:
                 neighbor_node[1] = True
 
-    def ClrNeigboorNode(self, node_id):
+    def ClrNeigboorNode( self, node_id ):
         """
         Clear Neighbor's Valid Flag
         """
@@ -303,7 +297,7 @@ class Create_CFGNode:
             if neighbor_node[0] == node_id:
                 neighbor_node[1] = False
 
-    def SetStLdPaths(self, path):
+    def SetStLdPaths( self, path ):
         """
         Register Path inside of This Node
         path:   DFG-Path
@@ -313,19 +307,19 @@ class Create_CFGNode:
         self.StLdPaths.append([copy.deepcopy(path), False, [[], []]])
         self.num_paths += 1
 
-    def ReadStLdPaths(self):
+    def ReadStLdPaths( self ):
         """
         Read Set (List) of Store-Load Paths
         """
         return self.StLdPaths
 
-    def ReadStLdPath(self, path_no):
+    def ReadStLdPath( self, path_no ):
         """
         Read Store-Load Path
         """
         return self.StLdPaths[path_no]
 
-    def CheckStLdPaths(self, src):
+    def CheckStLdPaths( self, src ):
         """
         Check Availability of Source Register Index in Store-Load Path
         """
@@ -337,14 +331,14 @@ class Create_CFGNode:
                         Chk_Src = True
         return Chk_Src
 
-    def ReadStLdPathExplored(self, path_no):
+    def ReadStLdPathExplored( self, path_no ):
         """
         Read Explored-Flag of This Node's Path
         """
         return self.StLdPaths[path_no][1]
 
 
-    def SetStLdIndex(self, path_no, st, index):
+    def SetStLdIndex( self, path_no, st, index ):
         """
         Set Store/Load Indeces to Path[path_no]
             st = 0:     Store
@@ -352,7 +346,7 @@ class Create_CFGNode:
         """
         self.StLdPaths[path_no][2][st].append(index)
 
-    def ReadStLdIndex(self, path_no, st):
+    def ReadStLdIndex( self, path_no, st ):
         """
         Read Path[path_no]
             st = 0:     Store
@@ -360,7 +354,7 @@ class Create_CFGNode:
         """
         return self.StLdPaths[path_no][2][st]
 
-    def CheckExplored(self, node_id):
+    def CheckExplored( self, node_id ):
         """
         Check Explored Flag and Valid Flags
         """
@@ -370,7 +364,7 @@ class Create_CFGNode:
 
         return False, False
 
-    def CheckAllExplored(self):
+    def CheckAllExplored( self ):
         """
         Check Explored Flag and Valid Flags
         """
@@ -380,7 +374,7 @@ class Create_CFGNode:
 
         return False, False
 
-    def ClrNeigboorNodes(self):
+    def ClrNeigboorNodes( self ):
         """
         Clear Neibor Node;s Explored Flag
         """
@@ -395,14 +389,13 @@ class Create_CFGNodes:
     Role:
         Structure of Graph
     """
-
-    def __init__(self):
+    def __init__( self ):
         self.path_ptr = 0
         self.node_ptr = 0
         self.nums = 0
         self.nodes = []
 
-    def ReadInitNode(self):
+    def ReadInitNode( self ):
         """
         Read Initial CFGNode
         """
@@ -412,14 +405,14 @@ class Create_CFGNodes:
         else:
             return -1
 
-    def SetNode(self, node):
+    def SetNode( self, node ):
         """
         Register Node
         """
         self.nodes.append(copy.deepcopy(node))
         self.nums += 1
 
-    def ReadNode(self, node_no):
+    def ReadNode( self, node_no ):
         """
         Read Node
         """
@@ -429,7 +422,7 @@ class Create_CFGNodes:
             f = node_no//self.nums
             return self.nodes[node_no-f*self.nums]
 
-    def SetExplored(self, node_id):
+    def SetExplored( self, node_id ):
         """
         Set Explored Flag to Node
         """
@@ -437,7 +430,7 @@ class Create_CFGNodes:
             if node.ReadNodeID() == node_id:
                 self.nodes[index].SetExpored()
 
-    def SetNeigboorNode(self, node_id, chk_node_id):
+    def SetNeigboorNode( self, node_id, chk_node_id ):
         """
         Set Neighbor's Node-ID
         """
@@ -445,7 +438,7 @@ class Create_CFGNodes:
             if node.ReadNodeID() == node_id:
                 node.SetNeigboorNode(self, chk_node_id)
 
-    def ClrNeigboorNode(self, node_id):
+    def ClrNeigboorNode( self, node_id ):
         """
         Clear Neighbor's Node-ID
         """
@@ -453,7 +446,7 @@ class Create_CFGNodes:
             if node.ReadNodeID() == node_id:
                 node.ClrNeigboorNode(self, node_id)
 
-    def ReadExplored(self, node_id):
+    def ReadExplored( self, node_id ):
         """
         Check node_id is already explored
         """
@@ -463,20 +456,20 @@ class Create_CFGNodes:
 
         return False
 
-    def ClrAllExplored(self):
+    def ClrAllExplored( self ):
         """
         Clear Explored Flag for All
         """
         for node in self.nodes:
             node.ClrExplored()
 
-    def ReadNum(self):
+    def ReadNum( self ):
         """
         Read Number of (CFG) Nodes
         """
         return self.nums
 
-    def SetStLdPaths(self, node_id, path):
+    def SetStLdPaths( self, node_id, path ):
         """
         Set Path to Node[node_id]
         """
@@ -485,7 +478,7 @@ class Create_CFGNodes:
                 node.SetStLdPaths(path)
                 self.path_ptr += 1
 
-    def SetStLdIndex(self, node_id, st, index):
+    def SetStLdIndex( self, node_id, st, index ):
         """
         Set Indeces to Node[node_id]
             st = 0:     Store
@@ -495,13 +488,13 @@ class Create_CFGNodes:
             if node.ReadNodeID() == node_id:
                 node.SetStLdIndex(node.num_paths-1, st, index)
 
-    def ReadCFGNode(self, cycle_no):
+    def ReadCFGNode( self, cycle_no ):
         """
         Read (CFG) Node
         """
         return self.nodes[cycle_no]
 
-    def ReadCFGNodebyID(self, node_id):
+    def ReadCFGNodebyID( self, node_id ):
         """
         Read (CFG) Node by ID
         """
@@ -510,8 +503,7 @@ class Create_CFGNodes:
                 return node
         return -1
 
-
-    def Reorder(self, sw):
+    def Reorder( self, sw ):
         """
         Reorder to Inverse Order
         """
@@ -526,23 +518,20 @@ class Create_CFGNodes:
 
         self.nodes = nodes
 
-
-    def ReadNumNodes(self):
+    def ReadNumNodes( self ):
         """
         Read Number of (CFG) Nodes
         """
         return self.nums
 
-
-    def ClrExplored(self):
+    def ClrExplored( self ):
         """
         Clear All Neighbors
         """
         for node in self.nodes:
             node.ClrNeigboorNodes()
 
-
-    def ClrExplores(self):
+    def ClrExplores( self ):
         """
         Clear All Explore Flags
         """
@@ -558,7 +547,6 @@ def ReadIndex( DFG_Path, DFG_Node_List ):
 
     Set -1 when register index number is not available.
     """
-
     # Read Indeces' ID to Access Node List
     if isinstance(DFG_Path, list) and len(DFG_Path) > 0:
         #print("    DFG-Path: {}".format(DFG_Path))
@@ -646,7 +634,6 @@ def Preprocess( r_file_path2, r_file_path, r_file_name, CyclicPaths ):
     Role:
         Construct Control-Flow Graph
     """
-
     #print("START PREPROCESS")
 
     CFGNodes = []
@@ -761,7 +748,7 @@ def Preprocess( r_file_path2, r_file_path, r_file_name, CyclicPaths ):
     return CFGNodes, NM_List
 
 
-def BranchNodeTracker(CFG_Nodes):
+def BranchNodeTracker( CFG_Nodes ):
     """
     Finding Branch CFG-Node used for transitting between Cyclic Control-Flow
     """
@@ -789,7 +776,7 @@ def BranchNodeTracker(CFG_Nodes):
     return BranchList
 
 
-def ReadBranchNodeID(CycleNo, BranchList):
+def ReadBranchNodeID( CycleNo, BranchList ):
     """
     Read Branch CFG Node-ID
     """
@@ -800,10 +787,9 @@ def ReadBranchNodeID(CycleNo, BranchList):
 
     return -1
 
-
 Record = []
 
-def PathPicker(CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG, TurnNo, Src_Index, Src, Dst, Step_Count):
+def PathPicker( CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG, TurnNo, Src_Index, Src, Dst, Step_Count ):
     """
     Data-Flow Path Picker
 
@@ -1150,7 +1136,7 @@ def PathPicker(CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG,
         return No_Path, CFG, Path
 
 
-def CommonFetch(CyclicCFG, CFG):
+def CommonFetch( CyclicCFG, CFG ):
     """
     Read Common CFG Node-ID between Cyclic Control-Flows
     """
@@ -1169,7 +1155,7 @@ def CommonFetch(CyclicCFG, CFG):
     return prog_cfg
 
 
-def BackTrack(CFG_Nodes):
+def BackTrack( CFG_Nodes ):
     CycleNo = 0
     Node_Ptr = 0
     CFGNodes = CFG_Nodes[0]
@@ -1241,7 +1227,6 @@ def DFG_Extract( node_lists, dfg ):
     """
     Data-Flow Graph Extraction
     """
-
     prog_dfg = []
     is_Branch = False
     if isinstance(node_lists, list):
@@ -1287,7 +1272,7 @@ def CreateNodeLists( r_file_path, Programs ):
     return node_lists
 
 
-def NMCompose(cfg_node_id, prog_dfg, NM_List):
+def NMCompose( cfg_node_id, prog_dfg, NM_List ):
 
     list_no = 0
     for list_no, nm_list in enumerate(NM_List):
@@ -1581,7 +1566,6 @@ def ReadLdLdPath( r_file_path, post_fix, Programs ):
     """
     Read Load-Load Path
     """
-
     ld_ld_paths = []
     for prog in Programs:
         cfg_ld_paths = []
@@ -1603,11 +1587,10 @@ def ReadLdLdPath( r_file_path, post_fix, Programs ):
     return ld_ld_paths
 
 
-def Reorder(CFG_Nodes):
+def Reorder( CFG_Nodes ):
     """
     Make Inverse Order
     """
-
     CFGNodes = []
     for index in range(len(CFG_Nodes)-1, -1, -1):
         CFG_Nodes[index].Reorder(index&1)
@@ -1616,7 +1599,7 @@ def Reorder(CFG_Nodes):
     return CFGNodes
 
 
-def CodeWrite(w_file_path, w_post_fix, llvm_ir):
+def CodeWrite( w_file_path, w_post_fix, llvm_ir ):
     for llvm_ir_ in llvm_ir:
         for line_no, line in enumerate(llvm_ir_):
             if "Index-" in line:
@@ -1669,7 +1652,7 @@ def DuplicatedDFGNodeRemover( LLVM_IR ):
     return LLVM_IR_
 
 
-def AddrGen1(name, r_file_path, r_file_path1, r_file_path2, ):
+def AddrGen1(name, r_file_path, r_file_path1, r_file_path2 ):
 
     # Compiled Program Name
     name='mvm'
@@ -1718,7 +1701,7 @@ def AddrGen1(name, r_file_path, r_file_path1, r_file_path2, ):
         addr_gen_cfg_list.writelines(map(str, Programs))
 
 
-def AddrGen2(r_file_path, r_file_path1, r_file_path2, r_file_path3, w_file_path, Programs):
+def AddrGen2( r_file_path, r_file_path1, r_file_path2, r_file_path3, w_file_path, Programs ):
 
     # Read Load-Load Paths
     post_fix = "st_ld"
@@ -1790,7 +1773,7 @@ def CodeMerger( NM_List, Node_Lists, MaskLdLdPaths, LdLdPaths, LLVM_IR ):
     return LLVM_IR_
 
 
-def ExtractBBs(file_path, file_name):
+def ExtractBBs( file_path, file_name ):
 
     basic_blocks = []
     current_label = None
@@ -1834,7 +1817,7 @@ def ExtractBBs(file_path, file_name):
     return bblocks, basic_blocks
 
 
-def ReadLabel(branch_instr):
+def ReadLabel( branch_instr ):
 
     tokens = branch_instr.split(' ')
     labels = []
@@ -1846,7 +1829,7 @@ def ReadLabel(branch_instr):
     return labels
 
 
-def GetLabelInfo(basic_blocks):
+def GetLabelInfo( basic_blocks ):
 
     label_info = []
 
@@ -1862,7 +1845,7 @@ def GetLabelInfo(basic_blocks):
     return label_info
 
 
-def CFGNodeMerger(r_file_path, r_file_name):
+def CFGNodeMerger( r_file_path, r_file_name ):
 
     bblocks, basic_blocks = ExtractBBs(r_file_path, r_file_name)
 
@@ -1975,7 +1958,7 @@ def CFGNodeMerger(r_file_path, r_file_name):
     return bblocks
 
 
-def Main_Gen_AGUCode(r_file_path, r_file_name, w_file_path, w_file_name):
+def Main_Gen_AGUCode( r_file_path, r_file_name, w_file_path, w_file_name ):
 
     bblocks = CFGNodeMerger(r_file_path, r_file_name)
 
