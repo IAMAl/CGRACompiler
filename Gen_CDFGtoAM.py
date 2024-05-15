@@ -416,7 +416,7 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
         am_file.writelines(str(am))
 
 
-def Main_Gen_CDFGtoAM(r_file_path, r_file_name, w_file_path, ZERO_REMOVE, DST_APPEND):
+def Main_Gen_CDFGtoAM( r_file_path, r_file_name, w_file_path, ZERO_REMOVE, DST_APPEND ):
 
     if DST_APPEND:
         mode = "dst_append"

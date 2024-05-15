@@ -4,7 +4,7 @@ import uitls.GraphUnitls
 
 DEBUG = True
 
-def instr_parser(instr):
+def instr_parser( instr ):
     """
     Instruction Parser
     """
@@ -459,7 +459,7 @@ def instr_parser(instr):
         sw
 
 
-def switch_parser(line, dst, d_type, no_br):
+def switch_parser( line, dst, d_type, no_br ):
     """
     Switch IR is typically not supported by ISA.
     This method works to generate equivalent set of IRs.
@@ -512,7 +512,7 @@ def switch_parser(line, dst, d_type, no_br):
     return "lab_" + str(no_br), lines
 
 
-def asm_parser(asm):
+def asm_parser( asm ):
     """
     LLVM-IR Parser
     """
@@ -762,7 +762,7 @@ def asm_parser(asm):
     return prog
 
 
-def is_Val(src):
+def is_Val( src ):
     """
     Check literal is value (val) or not.
     Return
@@ -773,7 +773,7 @@ def is_Val(src):
     return "%" != src[0]
 
 
-def is_None(src):
+def is_None( src ):
     """
     Check literal is None or not.
     Return
@@ -784,7 +784,7 @@ def is_None(src):
     return None == src
 
 
-def FetchSrc(src="src2", instr=None):
+def FetchSrc( src="src2", instr=None ):
     """
     Fetch Src-ID from instr class.
     Return
@@ -816,31 +816,31 @@ class RegInstr:
         self.instr = None           #instruction class
         self.next_bb = False        #Moved to Next Basic Block then True
 
-    def ReadProg(self):
+    def ReadProg( self ):
         """
         Read Program
         """
         return self.prog
 
-    def ReadHitPtr(self):
+    def ReadHitPtr( self ):
         """
         Read Hit (Source-Node) Pointer
         """
         return self.hit_ptr
 
-    def ReadPtr(self):
+    def ReadPtr( self ):
         """
         Read Current Pointer
         """
         return self.ptr
 
-    def SetPtr(self, ptr=None):
+    def SetPtr( self, ptr=None ):
         """
         Set Pointers
         """
         self.ptr = copy.deepcopy(ptr)
 
-    def PushPtr(self):
+    def PushPtr( self ):
         """
         Push Pointers to Stack
         Used for Record a Path having Source-2 for backing to the instr
@@ -849,7 +849,7 @@ class RegInstr:
         ptr = self.ptr
         self.stack_ptr.append(copy.deepcopy(ptr))
 
-    def PopPtr(self, SrcNo=None):
+    def PopPtr( self, SrcNo=None ):
         """
         Pop Pointers from Stack
         Used for reverting Path and entering to Source-1 path
@@ -857,13 +857,13 @@ class RegInstr:
         if len(self.stack_ptr) > 0:
             self.ptr = self.stack_ptr.pop()
 
-    def DepthStack(self):
+    def DepthStack( self ):
         """
         Return Stack-Depth
         """
         return len(self.stack_ptr)
 
-    def CheckInstr(self, ptr=None):
+    def CheckInstr( self, ptr=None ):
         """
         Record instruction addressed by current pointer
         Marking discovered flag which indicates source-1 operand is commited.
@@ -874,7 +874,7 @@ class RegInstr:
             f_ptr, b_ptr, i_ptr = ptr["f_ptr"], ptr["b_ptr"], ptr["i_ptr"]
         self.prog.funcs[f_ptr].bblocks[b_ptr].instrs[i_ptr].discovered = True
 
-    def CheckHitInstr(self):
+    def CheckHitInstr( self ):
         """
         Record hit-instruction addressed by hit-pointer
         Marking discovered flag which indicates source-1 operand is commited.
@@ -882,7 +882,7 @@ class RegInstr:
         f_ptr, b_ptr, i_ptr = self.hit_ptr["f_ptr"], self.hit_ptr["b_ptr"], self.hit_ptr["i_ptr"]
         self.prog.funcs[f_ptr].bblocks[b_ptr].instrs[i_ptr].discovered = True
 
-    def ReadInstr(self, ptr=None):
+    def ReadInstr( self, ptr=None ):
         """
         Fetch Instruction addessed by current pointer
         """
@@ -890,19 +890,19 @@ class RegInstr:
         instr = self.prog.funcs[f_ptr].bblocks[b_ptr].instrs[i_ptr]
         return self.prog.funcs[f_ptr].bblocks[b_ptr].instrs[i_ptr]
 
-    def SetPrevInstr(self, instr=None):
+    def SetPrevInstr( self, instr=None ):
         """
         Set discovered instruction
         """
         self.instr = instr
 
-    def ReadPrevInstr(self):
+    def ReadPrevInstr( self ):
         """
         Read previoiusly discovered instruction
         """
         return self.instr
 
-    def NextInstr(self, r):
+    def NextInstr( self, r ):
         """
         Set Instruction as a Node
         Update pointers (current and previous) for this loop-cycle.
@@ -912,7 +912,7 @@ class RegInstr:
         # Can Explore Path
         return "next_seq_src2"
 
-    def CheckTerm(self):
+    def CheckTerm( self ):
         """
         Check termination
         If all instructions are discovered then does termination.
@@ -933,10 +933,10 @@ class RegInstr:
         else:
             return "next_reg_dst"
 
-    def CheckBlockTerm(self):
+    def CheckBlockTerm( self ):
         return self.ptr == 0
 
-    def SearchDst(self):
+    def SearchDst( self ):
         """
         Search Instruction having Undiscovered
         This module works when seeking pointer reaches to terimial nodes.
@@ -964,7 +964,7 @@ class RegInstr:
         # Could Not Find source node
         return False
 
-    def SearchSrc(self, src=None):
+    def SearchSrc( self, src=None ):
         """
         Search Instruction having Source Operand
         """
@@ -986,7 +986,7 @@ class RegInstr:
         return False
 
 
-def DataFlowExploreOriginal(operand="src2", r=None, g=None):
+def DataFlowExploreOriginal( operand="src2", r=None, g=None ):
     """
     Common Processing task for Source-1 and -2
     """
@@ -1166,7 +1166,7 @@ def DataFlowExploreOriginal(operand="src2", r=None, g=None):
             return "next_reg_dst"
 
 
-def DataFlowExplore(operand="src2", r=None, g=None):
+def DataFlowExplore( operand="src2", r=None, g=None ):
     """
     Common Processing task for Source-1 and -2
     """
@@ -1254,7 +1254,7 @@ def IR_Parser( dir_ll, file_name, ):
         return prog
 
 
-def InitInstr(prog):
+def InitInstr( prog ):
     """
     Initialize Graph Constructor
     """
@@ -1284,7 +1284,7 @@ def InitInstr(prog):
     return ptr, prog.num_funcs, total_num_bblocks, total_num_instrs, instr
 
 
-def remove_duplicate_edges(num_dup, start_no, lines):
+def remove_duplicate_edges( num_dup, start_no, lines ):
     """
     Remove Dupplicate (Same) Edges
     """
@@ -1298,7 +1298,7 @@ def remove_duplicate_edges(num_dup, start_no, lines):
     return lines
 
 
-def dupl_remover_dfg(dir_ll, prog):
+def dupl_remover_dfg( dir_ll, prog ):
     """
     Remove Duplicate
     """
@@ -1485,7 +1485,7 @@ def cfg_extractor( r=None, prog=prog, out=None, dir_ll, file_name ):
         out.write("}")
 
 
-def dupl_remover_cfg(dir_ll, dot_file_name, prog):
+def dupl_remover_cfg( dir_ll, dot_file_name, prog ):
     dot_file_name = prog.name+"_cfg.dot"
     openfile = dir_ll + dot_file_name
 
@@ -1519,7 +1519,7 @@ def dupl_remover_cfg(dir_ll, dot_file_name, prog):
             dot_file.write(present_lines[line_no])
 
 
-def Main_Gen_LLVMtoCFG(r_file_path, r_file_name):
+def Main_Gen_LLVMtoCFG( r_file_path, r_file_name ):
 
     prog = ProgReader(r_file_path, r_file_name)
 
