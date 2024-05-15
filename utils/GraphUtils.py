@@ -2,7 +2,6 @@ class GraphUtils:
     """
     Utilities for Graph-Drawing
     """
-
     def __init__(self, out, total_num_instr):
         self.count = 0
         self.edges = []

@@ -15,7 +15,6 @@ def QuickAMComposer( f ):
     Up-side or Bottomn-side Triange can be used
         Our Implementation uses Upside
     """
-
     # Adjacency Matrix
     am = []
 
