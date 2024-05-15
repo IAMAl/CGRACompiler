@@ -1,4 +1,4 @@
-import utils.ProgramReader
+import utils.ProgReader
 import numpy as np
 
 def ZeroRemover( am ):
