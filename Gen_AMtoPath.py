@@ -1,4 +1,4 @@
-import ..ReadPrograｍｍ
+import utils.ProgReader
 
 PATH_FORMAT = False
 
@@ -16,7 +16,6 @@ def TraceBack(am, row_no, paths, stack_a, stack_b):
     Function
         - Generate set of paths from root
     """
-
     #print("enter to row-{}".format(row_no))
     #print(stack_a)
     stack_a_ = []
@@ -61,7 +60,6 @@ def TraceBack(am, row_no, paths, stack_a, stack_b):
 
 def TraceFormatter(paths):
     paths_ = []
-
     for index, path in enumerate(paths):
         for chk_index in range(index+1, len(paths), +1):
             if paths[chk_index][0] in path:
@@ -84,7 +82,6 @@ def BackPathGen(PATH_FORMAT=False, r_file_path="./", r_file_name="@main()_bblock
     Function
         - Generate set of paths from root
     """
-
     #Setting Up Node List
     bb_node_list = []
     with open(r_file_path+r_file_name+"_node_list_inv.txt", "r") as bb_dfg_nl:
@@ -235,7 +232,6 @@ def StLdMarker(r_file_path="./", r_file_name="@main()_bblock_12", w_file_path=".
         - Generate set of paths to load-leaf
         - Generate set of paths from store-root to load-leaf
     """
-
     #Setting Up Node List
     bb_node_list = []
     with open(r_file_path+r_file_name+"_node_list_inv.txt", "r") as bb_dfg_nl:
@@ -372,10 +368,10 @@ def StLdMarker(r_file_path="./", r_file_name="@main()_bblock_12", w_file_path=".
 
         ldld_paths.append(ldld_path)
 
-
     with open(w_file_path+w_file_name+"_bpath_ld_source_ld.txt", "w") as ldld_bpath:
         if ldld_paths != None:
             ldld_bpath.writelines(map(str, ldld_paths))
+
 
 def Main_Gen_AMtoPath( r_file_path, w_file_path, prog ):
     for func in prog.funcs:

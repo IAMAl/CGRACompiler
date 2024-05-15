@@ -1,6 +1,6 @@
 import utils.ProgConstructor as ProgConstructor
 
-def ReadProgram( r_file_path="./", r_file_name="mvm_program"):
+def ProgReader( r_file_path="./", r_file_name="mvm_program"):
     """
     Program File Read and Composition
 
@@ -12,7 +12,6 @@ def ReadProgram( r_file_path="./", r_file_name="mvm_program"):
         - Read File of parsed program
         - Compose program() class
     """
-
     openfile = r_file_path + r_file_name+".txt"
     with open(openfile, "r") as prog_file:
         in_prog = False

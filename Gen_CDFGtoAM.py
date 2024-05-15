@@ -54,7 +54,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
         - Generates File representing Node List
         - Files having Postfix "_inv" is an Inverse AM and is Node List
     """
-
     # Parsing
     # Feeding dot file, and split with "->"
     dot_lines = []
@@ -100,7 +99,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                 if ( "br" in present_line[0] ) or ( "ret" in present_line ):
                     dot_lines.append(present_line)
 
-
     #   Parsing Data-Flow Graph with Nemonic
     dot_nm_lines = []
     openfile = r_file_path + r_file_name+"_nm_dfg"+".dot"
@@ -144,7 +142,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                     dot_nm_lines.append(present_line)
     #print(dot_lines)
 
-
     # Node-ID Composition
     leaf_node_list = []
     node_list = []
@@ -163,7 +160,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
             src_index = nodes[1].replace('"', '')
         else:
             src_index = "None"
-
 
         # Register Node to List
         find_dst = False
@@ -189,7 +185,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                 else:
                     find_src = False
 
-
         # Check 2nd Source, add 2nd Source to List-entry if available
         if find_dst:
             if len(nodes) > 1:
@@ -209,7 +204,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                 find = True
                 break
 
-
         # Register
         if not find:
             for no_ in src_found_list:
@@ -221,7 +215,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
             if not find:
                 src_found_list.append(no)
                 leaf_node_list.append([ no, src_node, "LEAF" ])
-
 
     # Node-ID Sorting
     for no, node in enumerate(node_list):
@@ -275,7 +268,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                 # One Source
                 node_list_file.write(str(node[0])+" "+node[3].replace("\n", '')+"\n")
 
-
     # Compose Inverse-AM
     iam = np.zeros((len(node_list), len(node_list)), dtype=int)
     for line in dot_lines:
@@ -304,7 +296,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
             iam[src_no][dst_no] = 1
             iam[dst_no][src_no] = 1
 
-
     # Remove Zero-Row and Zero-Column
     if ZERO_REMOVE:
         zero_rows = []
@@ -325,7 +316,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                 irow.pop(zero_index-cnt)
                 cnt += 1
 
-
             iam.append(irow)
             #print(irow)
 
@@ -335,7 +325,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
     openfile = w_file_path + w_file_name+"_am_inv.txt"
     with open(openfile, "w") as am_file:
         am_file.writelines(str(iam))
-
 
     # AM Composition
     #   Output for Node List for AM
@@ -368,7 +357,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
             elif len(node) == 4:
                 # One Source
                 node_list_file.write(str(len(node_list) - node[0])+" "+node[3].replace("\n", '')+"\n")
-
 
     # Compose AM
     am = np.zeros((len(node_list), len(node_list)), dtype=int)
@@ -417,7 +405,6 @@ def AMComposer( ZERO_REMOVE, mode, r_file_path, r_file_name, w_file_path, w_file
                 irow.pop(zero_index-cnt)
                 cnt += 1
 
-
             am.append(irow)
             #print(irow)
 
@@ -436,7 +423,7 @@ def Main_Gen_CDFGtoAM(r_file_path, r_file_name, w_file_path, ZERO_REMOVE, DST_AP
     else:
         mode = "no_dst"
 
-    prog = ReadProgram( r_file_path=r_file_path, r_file_name=r_file_name)
+    prog = ProgReader( r_file_path=r_file_path, r_file_name=r_file_name)
 
     for func in prog.funcs:
         name_func = func.name.replace('\n', '')

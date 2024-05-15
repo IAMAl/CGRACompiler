@@ -1,5 +1,6 @@
-import .utils.InstrTypeCheck.Type_Check
+import utils.InstrTypeCheck
 import utils.ProgReader
+import uitls.GraphUnitls
 
 DEBUG = True
 
@@ -502,7 +503,6 @@ def switch_parser(line, dst, d_type, no_br):
     sw_{no_br} = icmp eq d_type dst, 10
     br sw_{no_br+5}, label %8 label %38
     """
-
     lines = []
     line_icmp = "  sw_" + str(no_br) + " = icmp eq " + line[0] + " " + dst + ", " + line[1]
     line_br = "  br i1 sw_" + str(no_br) + ", label" + line[3] + " label lab_" + str(no_br + 1)
@@ -516,7 +516,6 @@ def asm_parser(asm):
     """
     LLVM-IR Parser
     """
-
     # Current status flags
     #   True then being entered
     in_func = False
@@ -531,7 +530,6 @@ def asm_parser(asm):
 
     # Oblects maintains hierarchical structure
     prog = program()
-
 
     for line_no, line in enumerate(asm):
         # These set-up lines should be ommitted
@@ -587,7 +585,6 @@ def asm_parser(asm):
                     bblock.append(instr)
                     in_switch = False
 
-
             elif type_chk.is_func(line):
                 # Create Function Object
                 func = function()
@@ -606,7 +603,6 @@ def asm_parser(asm):
                 if DEBUG:
                     print(f"Enter Func: {func.name}")
 
-
             elif type_chk.is_bblock(line) and in_func and not in_bblock:
                 # Create Basic-Block Object
                 bblock = basicblock()
@@ -619,7 +615,6 @@ def asm_parser(asm):
                 no_br = 0
                 if DEBUG:
                     print(f"Enter BBlock: {bblock.name}")
-
 
             elif in_func and not in_bblock:
                 # Create "First" Basic-Block Object
@@ -660,7 +655,6 @@ def asm_parser(asm):
 
                 no_br = 0
 
-
             elif type_chk.is_instr(line) and "\n" != line and in_bblock and not in_switch:
                 # Register Instruction
                 line = line.replace("\n", "")
@@ -690,7 +684,6 @@ def asm_parser(asm):
 
                 no_br = 0
 
-
             elif "\n" == line and in_bblock:
                 # Exit Basic-Block
                 # Common Exiting
@@ -711,7 +704,6 @@ def asm_parser(asm):
                 no_br = 0
                 if DEBUG:
                     print("\n")
-
 
             elif "}" in line and in_func:
                 if in_bblock:
@@ -780,6 +772,7 @@ def is_Val(src):
     """
     return "%" != src[0]
 
+
 def is_None(src):
     """
     Check literal is None or not.
@@ -789,6 +782,7 @@ def is_None(src):
     Common for Source-1 and Source-2.
     """
     return None == src
+
 
 def FetchSrc(src="src2", instr=None):
     """
@@ -939,7 +933,6 @@ class RegInstr:
         else:
             return "next_reg_dst"
 
-
     def CheckBlockTerm(self):
         return self.ptr == 0
 
@@ -992,8 +985,6 @@ class RegInstr:
         # Could Not Find source node
         return False
 
-
-        i_ptr = prog.funcs[f_ptr].bblocks[b_ptr].num_instrs - 1
 
 def DataFlowExploreOriginal(operand="src2", r=None, g=None):
     """
@@ -1139,7 +1130,6 @@ def DataFlowExploreOriginal(operand="src2", r=None, g=None):
         # Token on Dst Part is Sink
         is_Sink = dst_is_Sink
 
-
         if src_is_Val:
             # Source is Immediate Value
             r.SetPrevInstr(instr=instr)
@@ -1180,7 +1170,6 @@ def DataFlowExplore(operand="src2", r=None, g=None):
     """
     Common Processing task for Source-1 and -2
     """
-
     # Fetch Present Instr
     instr = r.ReadInstr(r.ReadPtr())
     instr_dst = instr.dst
@@ -1250,8 +1239,7 @@ def DataFlowExplore(operand="src2", r=None, g=None):
         return "next_reg_dst"
 
 
-def IR_Parser( dir_ll, file_name, )
-
+def IR_Parser( dir_ll, file_name, ):
     openfile = dir_ll + file_name + ".ll"
     prog = None
 
@@ -1270,7 +1258,6 @@ def InitInstr(prog):
     """
     Initialize Graph Constructor
     """
-
     # Pointer Extraction
     f_ptr = prog.num_funcs - 1
     if (f_ptr < 0):
@@ -1297,7 +1284,6 @@ def InitInstr(prog):
     return ptr, prog.num_funcs, total_num_bblocks, total_num_instrs, instr
 
 
-
 def remove_duplicate_edges(num_dup, start_no, lines):
     """
     Remove Dupplicate (Same) Edges
@@ -1312,8 +1298,10 @@ def remove_duplicate_edges(num_dup, start_no, lines):
     return lines
 
 
-def depl_remover(dir_ll):
-
+def dupl_remover_dfg(dir_ll, prog):
+    """
+    Remove Duplicate
+    """
     # Duplicate Remover
     # Directory path maintains LLVM-IR file
     openfile = dir_ll + prog.name+"_dfg_o.dot"
@@ -1339,12 +1327,11 @@ def depl_remover(dir_ll):
                 start_no = present_no+compare_no
                 present_lines = remove_duplicate_edges(num_dup, start_no, present_lines)
 
-
     print("Total {} lines removed.".format(num_dup))
 
     #Write after removing
     #post-fix:  "_dfg_r"
-    dot_file_r_name = "../temp/llvmcdfggen/"+dot_file_name+"_dfg_r.dot"
+    dot_file_r_name = "./temp/llvmcdfggen/"+dot_file_name+"_dfg_r.dot"
     with open(dot_file_r_name, "w") as dot_file:
         dot_file.writelines(lines)
 
@@ -1368,8 +1355,7 @@ def line_reorder( prog, dir_ll, dot_file_name ):
         dot_file.write("}")
 
 def Main_Gen_LLVMtoDFG( r_file_path, r_file_name, dir_dot ):
-    
-    prog = ReadProgram(r_file_path, r_file_name)
+    prog = ProgReader( r_file_path, r_file_name )
 
     # Create Objects constructing
     #   hierarchical instructin structure
@@ -1382,7 +1368,6 @@ def Main_Gen_LLVMtoDFG( r_file_path, r_file_name, dir_dot ):
 
     next_instr = instr
     Next_State = "next_seq_src2"
-
 
     with open(dir_dot+prog.name + "_dfg_o.dot", "w") as out:
         # Graph Utilities
@@ -1418,10 +1403,11 @@ def Main_Gen_LLVMtoDFG( r_file_path, r_file_name, dir_dot ):
             g.write(edge)
 
         g.write("}")
-        
+
         remove_duplicate_edges(num_dup, start_no, lines)
-        depl_remover(dir_ll)
+        dupl_remover_dfg(dir_ll)
         line_reorder( prog, dir_ll, dot_file_name )
+
 
 def cfg_extractor( r=None, prog=prog, out=None, dir_ll, file_name ):
     """
@@ -1499,47 +1485,50 @@ def cfg_extractor( r=None, prog=prog, out=None, dir_ll, file_name ):
         out.write("}")
 
 
+def dupl_remover_cfg(dir_ll, dot_file_name, prog):
+    dot_file_name = prog.name+"_cfg.dot"
+    openfile = dir_ll + dot_file_name
+
+    present_lines = []
+    lines = []
+    num_dup = 0
+
+    with open(openfile, "r") as dot_file:
+        for present_line in dot_file:
+            present_lines.append(present_line)
+
+    # Seek Same Line with Scan-Line Method
+    for present_no, present_line in enumerate(present_lines):
+        for compare_no, compare_line in enumerate(present_lines):
+            if compare_no == 0:
+                lines.append(present_line)
+            elif compare_line == present_line and compare_no != present_no:
+                #print("duplicated.")
+                num_dup += 1
+                start_no = present_no+compare_no
+                for index_no in range(start_no, len(present_lines)-1, 1):
+                    present_lines[index_no] = present_lines[index_no+1]
+
+                present_lines[len(present_lines)-1] = ""
+
+    print("Total {} lines removed.".format(num_dup))
+
+    dot_file_name = "./temp/llvmcdfggen/"+prog.name+"_cfg_r.dot"
+    with open(dot_file_name, "w") as dot_file:
+        for line_no in range(len(present_lines)):
+            dot_file.write(present_lines[line_no])
+
+
 def Main_Gen_LLVMtoCFG(r_file_path, r_file_name):
 
-    prog = ReadProgram(r_file_path, r_file_name)
+    prog = ProgReader(r_file_path, r_file_name)
 
-    with open("../temp/llvmcdfggen/"+prog.name + "_cfg.dot", "w") as out:
+    with open("./temp/llvmcdfggen/"+prog.name + "_cfg.dot", "w") as out:
         # Graph Utilities
         g_cfg = GraphUtils(out, total_num_instrs)
 
         # Graph Header Description
         g_cfg.start_cf_graph()
         cfg_extractor(r=r, prog=prog, out=out)
-
-    def dupl_remover(dir_ll, dot_file_name, prog):
-        dot_file_name = prog.name+"_cfg.dot"
-        openfile = dir_ll + dot_file_name
-
-        present_lines = []
-        lines = []
-        num_dup = 0
-
-        with open(openfile, "r") as dot_file:
-            for present_line in dot_file:
-                present_lines.append(present_line)
-
-        # Seek Same Line with Scan-Line Method
-        for present_no, present_line in enumerate(present_lines):
-            for compare_no, compare_line in enumerate(present_lines):
-                if compare_no == 0:
-                    lines.append(present_line)
-                elif compare_line == present_line and compare_no != present_no:
-                    #print("duplicated.")
-                    num_dup += 1
-                    start_no = present_no+compare_no
-                    for index_no in range(start_no, len(present_lines)-1, 1):
-                        present_lines[index_no] = present_lines[index_no+1]
-
-                    present_lines[len(present_lines)-1] = ""
-
-        print("Total {} lines removed.".format(num_dup))
-
-        dot_file_name = "../temp/llvmcdfggen/"+prog.name+"_cfg_r.dot"
-        with open(dot_file_name, "w") as dot_file:
-            for line_no in range(len(present_lines)):
-                dot_file.write(present_lines[line_no])
+        
+        dupl_remover_cfg(dir_ll, dot_file_name, prog):

@@ -1,4 +1,4 @@
-def AMComposer( f ):
+def QuickAMComposer( f ):
     """
     Compose Adjacency Matrix (AM)
         AM for Undirected Edges

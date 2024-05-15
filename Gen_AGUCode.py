@@ -143,17 +143,17 @@ def ReadDFG( r_file_path2="./", r_file_path="./", r_file_name="mvm", cfg_node_id
     """
 
     r_path_file_name = r_file_name+"_"+cfg_node_id+"_bpath_st.txt"
-    dfg_paths = ReadFile(file_path=r_file_path2, file_name=r_path_file_name )
+    dfg_paths = FileReader(file_path=r_file_path2, file_name=r_path_file_name )
     DFG_Paths = Parser( dfg_paths, 'dfg' )
     #print("    DFG Paths:{}".format(DFG_Paths))
 
     r_node_list_file_name = r_file_name+"_"+cfg_node_id+"_node_list.txt"
-    dfg_node_list = ReadFile(file_path=r_file_path, file_name=r_node_list_file_name )
+    dfg_node_list = FileReader(file_path=r_file_path, file_name=r_node_list_file_name )
     DFG_Node_List = Parser( dfg_node_list, 'dfg' )
     #print("    DFG Node List:{}".format(DFG_Node_List))
 
     r_nm_list_file_name = r_file_name+"_"+cfg_node_id+"_nemonic_list.txt"
-    nm_node_list = ReadFile(file_path=r_file_path, file_name=r_nm_list_file_name )
+    nm_node_list = FileReader(file_path=r_file_path, file_name=r_nm_list_file_name )
     NM_Node_List = Parser( nm_node_list, 'nemonic' )
     #print("    DFG Node List:{}".format(DFG_Node_List))
 
@@ -765,7 +765,6 @@ def BranchNodeTracker(CFG_Nodes):
     """
     Finding Branch CFG-Node used for transitting between Cyclic Control-Flow
     """
-
     BranchList = []
     for CycleNo, CFGNodes in enumerate(CFG_Nodes):
         for CFG_No in range(CFGNodes.ReadNumNodes()):
@@ -794,7 +793,6 @@ def ReadBranchNodeID(CycleNo, BranchList):
     """
     Read Branch CFG Node-ID
     """
-
     for BranchInfo in BranchList:
         Cycle_ID = BranchInfo[0]
         if Cycle_ID == CycleNo:
@@ -819,7 +817,6 @@ def PathPicker(CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG,
         Src:            Pick Index for Source Register Index Number
         Dst:            Pick Index for Destination Register Index Number
     """
-
     No_Path = False
     Stop = False
     explored = False
@@ -936,7 +933,6 @@ def PathPicker(CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG,
         Block_Multiple_Src = -1
 
 
-
         for Src_Index in Src_Indices:
 
             Find = False
@@ -957,7 +953,6 @@ def PathPicker(CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG,
                     While_Continue = True
                     Break_Point = False
                     while While_Continue:
-
 
                         # Get neighbot node
                         CFGNode_Dst =  CFG_Nodes[CycleNo].ReadNode(Tmp_Node_Ptr+1)
@@ -1039,7 +1034,6 @@ def PathPicker(CycleNo, Node_Ptr, BranchList, CFGNode_Src, CFG_Nodes, Path, CFG,
                             While_Continue = True
                         else:
                             While_Continue = False
-
 
 
                         # Pre-Check Dst-Index
@@ -1160,7 +1154,6 @@ def CommonFetch(CyclicCFG, CFG):
     """
     Read Common CFG Node-ID between Cyclic Control-Flows
     """
-
     prog_cfg = []
     for index, cfg in enumerate(CFG):
         one_cfg = []
@@ -1177,7 +1170,6 @@ def CommonFetch(CyclicCFG, CFG):
 
 
 def BackTrack(CFG_Nodes):
-
     CycleNo = 0
     Node_Ptr = 0
     CFGNodes = CFG_Nodes[0]
@@ -1206,7 +1198,6 @@ def BackTrack(CFG_Nodes):
 def GetBBlock( prog, bblock_no ):
 
     nemonic = []
-
     for func in prog.funcs:
         for bblock in func.bblocks:
 
@@ -1225,7 +1216,6 @@ def Rotate( prog, cfg_node_id ):
     The Item having the ID is located to First by Rotation
     This is assumed by Cyclic Control Flow
     """
-
     if cfg_node_id in prog:
         index = prog.index( cfg_node_id )
         if index > 0:
@@ -1240,7 +1230,6 @@ def Rotate( prog, cfg_node_id ):
 
 
 def ReadNodeList( tag, cfg_node_id, node_lists ):
-
     if cfg_node_id in tag:
         index = tag.index( cfg_node_id )
         return node_lists[index]
@@ -1324,7 +1313,6 @@ def DFG_Compose( r_file_path, r_file_path2, r_file_name, no, no_index, cfg_node_
     """
     Data-Flow Graph Composer
     """
-
     # Set cfg_node_id to first entry
     tmp_no = no
     if no == no_index:
@@ -1441,7 +1429,7 @@ def AppendEntry( reg_index, alloc_list ):
 
 def AddrGen( r_file_path, r_file_path2, r_file_path3, r_file_name, Programs, StLd_Paths, LdLdPaths, NM_List ):
 
-    program = ReadProgram( r_file_path=r_file_path, r_file_name=r_file_name )
+    program = ProgReader( r_file_path=r_file_path, r_file_name=r_file_name )
     alloc_list = CreateEntry( program )
 
     target_bblock_lists = []
@@ -1690,7 +1678,7 @@ def AddrGen1(name, r_file_path, r_file_path1, r_file_path2, ):
 
     # Read Loop Paths in Control-Flow Graph
     r_file_name = name+"_cfg_loop.txt"
-    cfg_paths = ReadFile(file_path=r_file_path1, file_name=r_file_name)
+    cfg_paths = FileReader(file_path=r_file_path1, file_name=r_file_name)
     CyclicPaths = Parser( cfg_paths, 'cfg' )
 
     # Read Data-Flow Graphs and their Node Lists

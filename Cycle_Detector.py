@@ -1,8 +1,11 @@
+import utils.AMComposer
+import utils.AMReader
+
 def Preprocess(r_file_path="./", r_file_name="mvm_am"):
 
     file_name = r_file_name+"_am_inv.txt"
     f = ReadAM( file_path=r_file_path, file_name=file_name )
-    am_size, am = AMComposer( f )
+    am_size, am = QuickAMComposer( f )
 
     return am_size, am
 
@@ -59,8 +62,6 @@ class Node:
         """
         if self.Term:
             print("Node-{} is ended".format(self.NodeID))
-        #else:
-        #    print("Node-{} runs".format(self.NodeID))
         return self.Term
 
     def Set_Detect(self):
@@ -84,7 +85,7 @@ def GetShape(lst):
     if isinstance(lst, list):
         shape.append(len(lst))
     if lst:
-    shape.extend(GetShape(lst[0]))
+        shape.extend(GetShape(lst[0]))
 
     return shape
 
@@ -128,7 +129,6 @@ def RemoveList(lst):
             temp.append(lst_)
 
         return temp
-
     return lst
 
 
@@ -186,7 +186,6 @@ class EdgeTab:
 
 
 def CheckEcho(node_id, edges):
-
     if isinstance(edges, list):
         temp = []
         for edges_ in edges:
@@ -209,7 +208,6 @@ def CheckCycle(cycles, node_id, edges, first, last_level, level):
     """
     Sub-function for checking Cyclic-Loop
     """
-
     if isinstance(edges, list):
         #print("  Check Cyclic Loop for Node-{}: {} at Level-{}".format(node_id, edges, level))
         temp = []
@@ -234,16 +232,12 @@ def CheckCycle(cycles, node_id, edges, first, last_level, level):
             else:
                 first = True
 
-
         level -= 1
-
 
         return cycles, temp, False, first, False, level
     else:
-        #if edges == node_id:
-        #    print("  Cyclic-Loop Detected on Nodes: {} at Level-{}".format(node_id, edges, level))
         return cycles, edges, edges == node_id, first, True, level
-    
+
 
 def Main_CyckeDetector(cycles, node_id, edges, first, last_level, level):
     return CheckCycle(cycles, node_id, edges, first, last_level, level)

@@ -6,10 +6,8 @@ def ExtractBBs(file_path, file_name):
     current_label = None
     branch_instruction = None
 
-    basic_blocks = []
-
-    instrs = []
     bblocks = []
+    instrs = []
 
     with open(file_path+file_name, 'r') as file:
         instrs = []
@@ -48,7 +46,6 @@ def ReadLabel(branch_instr):
     """
     Label Reader
     """
-
     tokens = branch_instr.split(' ')
     labels = []
     for token in tokens:
@@ -63,7 +60,6 @@ def GetLabelInfo(basic_blocks):
     """
     Get Label Information
     """
-
     label_info = []
 
     for basic_block in enumerate(basic_blocks):
@@ -82,7 +78,6 @@ def CFGNodeMerger(r_file_path, r_file_name):
     """
     Node Merger for Control-Flow Graph
     """
-
     bblocks, basic_blocks = ExtractBBs(r_file_path, r_file_name)
 
     label_info = GetLabelInfo(basic_blocks)
