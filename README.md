@@ -1,1 +1,1 @@
-# ElectronNest_SWDesign
+# CGRA Compiler
