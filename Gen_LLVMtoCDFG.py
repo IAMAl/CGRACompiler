@@ -512,94 +512,6 @@ def switch_parser(line, dst, d_type, no_br):
     return "lab_" + str(no_br), lines
 
 
-class instruction:
-    opcode = None       #Opcode Name                String
-    dst = None          #Destination Name           String
-    d_type = None       #Destination Data-Type      String
-    operands = []       #Source Name                String
-    func = None         #Function Name              String
-    br_t = None         #Lavel for Branch Taken     Bool
-    br_f = None         #Lavel for Branch Not Taken Bool
-    imm = None          #Immediate Value            String
-    nemonic = None      #Nemonic (Assembly Code)    String
-    discovered = False  #Tracking Record            Bool
-
-
-class basicblock():
-    """
-    Basic Block Extractor
-    name = None         Basic Block Name            String
-    instrs = []         Set of Instructions         instruction class
-    num_instrs = 0      A Number of Instructions    Int
-    """
-    def __init__(self):
-        self.name = None
-        self.instrs = []
-        self.num_instrs = 0
-
-    def clear(self):
-        self.name = None
-        self.instrs.clear()
-        self.num_instrs = 0
-
-    def append(self, instr=instruction):
-        self.instrs.append(copy.deepcopy(instr))
-        self.num_instrs += 1
-
-    def set_name(self, b_name):
-        self.name = b_name
-
-
-class function():
-    """
-    Function Extractor
-    name = name         Function Name               String
-    bblocks = []        Set of Basic Blocks         basicblock class
-    num_bblocks = 0     A Number of Basic Blocks    Int
-    """
-    def __init__(self):
-        self.name = None
-        self.bblocks = []
-        self.num_bblocks = 0
-
-    def clear(self):
-        self.name = None
-        self.bblocks.clear()
-        self.num_bblocks = 0
-
-    def append(self, bblock):
-        self.bblocks.append(copy.deepcopy(bblock))
-        self.num_bblocks += 1
-
-    def set_name(self, f_name):
-        self.name = f_name
-
-
-class program():
-    """
-    Program Extractor
-    name = name         Program Name                String
-    funcs = []          Set of Functioins           function class
-    num_funcs = 0       A Number of Functions       Int
-    """
-    def __init__(self):
-        self.name = None
-        self.funcs = []
-        self.num_funcs = 0
-
-    def clear(self):
-        self.name = None
-        self.funcs.clear()
-        self.num_funcs = 0
-
-    def append(self, func):
-        self.funcs.append(copy.deepcopy(func))
-        self.num_funcs += 1
-
-    def set_name(self, p_name):
-        self.name = p_name
-
-
 def asm_parser(asm):
     """
     LLVM-IR Parser
@@ -1385,56 +1297,6 @@ def InitInstr(prog):
     return ptr, prog.num_funcs, total_num_bblocks, total_num_instrs, instr
 
 
-def CDFG_Gen_Simple( dir_dot ):
-
-    # Create Objects constructing
-    #   hierarchical instructin structure
-    # Setting Initial State
-    ptr, \
-    total_num_funcs, \
-    total_num_blocks, \
-    total_num_instrs, \
-    instr = InitInstr(prog)
-
-    next_instr = instr
-    Next_State = "next_seq_src2"
-
-
-    with open(dir_dot+prog.name + "_dfg_o.dot", "w") as out:
-        # Graph Utilities
-        g = GraphUtils(out, total_num_instrs)
-
-        # Graph Header Description
-        g.start_df_graph()
-
-        # Utilities
-        r = RegInstr(prog=prog, ptr=ptr)
-
-        # Processing Body
-        while "term" != Next_State:
-
-            # Sequence for Source-2 (Right)
-            if "next_seq_src2" == Next_State:
-                Next_State = DataFlowExploreOriginal(operand="src2", r=r, g=g)
-
-            # Sequence for Source-1 (Left)
-            if "next_seq_src1" == Next_State:
-                Next_State = DataFlowExploreOriginal(operand="src1", r=r, g=g)
-
-            # Check Termination
-            if "next_check_term" == Next_State:
-                Next_State = r.CheckTerm()
-
-            # Move Next Instruction
-            if "next_reg_dst" == Next_State:
-                Next_State = r.NextInstr(r=r)
-
-        # Write Edges
-        for edge in g.edges:
-            g.write(edge)
-
-        g.write("}")
-
 
 def remove_duplicate_edges(num_dup, start_no, lines):
     """
@@ -1487,7 +1349,7 @@ def depl_remover(dir_ll):
         dot_file.writelines(lines)
 
 
-def line_reorder(dir_ll):
+def line_reorder( prog, dir_ll, dot_file_name ):
     openfile = dir_ll + prog.name+"_dfg_r.dot"
     lines_ = []
     with open(openfile, "r") as dot_file:
@@ -1505,12 +1367,66 @@ def line_reorder(dir_ll):
 
         dot_file.write("}")
 
+def Main_Gen_LLVMtoDFG( r_file_path, r_file_name, dir_dot ):
+    
+    prog = ReadProgram(r_file_path, r_file_name)
 
-def cfg_extractor(r=None, prog=prog, out=None):
+    # Create Objects constructing
+    #   hierarchical instructin structure
+    # Setting Initial State
+    ptr, \
+    total_num_funcs, \
+    total_num_blocks, \
+    total_num_instrs, \
+    instr = InitInstr(prog)
+
+    next_instr = instr
+    Next_State = "next_seq_src2"
+
+
+    with open(dir_dot+prog.name + "_dfg_o.dot", "w") as out:
+        # Graph Utilities
+        g = GraphUtils(out, total_num_instrs)
+
+        # Graph Header Description
+        g.start_df_graph()
+
+        # Utilities
+        r = RegInstr(prog=prog, ptr=ptr)
+
+        # Processing Body
+        while "term" != Next_State:
+
+            # Sequence for Source-2 (Right)
+            if "next_seq_src2" == Next_State:
+                Next_State = DataFlowExploreOriginal(operand="src2", r=r, g=g)
+
+            # Sequence for Source-1 (Left)
+            if "next_seq_src1" == Next_State:
+                Next_State = DataFlowExploreOriginal(operand="src1", r=r, g=g)
+
+            # Check Termination
+            if "next_check_term" == Next_State:
+                Next_State = r.CheckTerm()
+
+            # Move Next Instruction
+            if "next_reg_dst" == Next_State:
+                Next_State = r.NextInstr(r=r)
+
+        # Write Edges
+        for edge in g.edges:
+            g.write(edge)
+
+        g.write("}")
+        
+        remove_duplicate_edges(num_dup, start_no, lines)
+        depl_remover(dir_ll)
+        line_reorder( prog, dir_ll, dot_file_name )
+
+def cfg_extractor( r=None, prog=prog, out=None, dir_ll, file_name ):
     """
     Control Graph Extractor
     """
-    dir_ll = "../temp/src/"
     openfile = dir_ll + file_name+".ll"
     with open(openfile, "r") as llvm_ir:
         """
@@ -1583,7 +1499,7 @@ def cfg_extractor(r=None, prog=prog, out=None):
         out.write("}")
 
 
-def Main_Gen_LLVMtoCDFG(r_file_path, r_file_name):
+def Main_Gen_LLVMtoCFG(r_file_path, r_file_name):
 
     prog = ReadProgram(r_file_path, r_file_name)
 
@@ -1627,5 +1543,3 @@ def Main_Gen_LLVMtoCDFG(r_file_path, r_file_name):
         with open(dot_file_name, "w") as dot_file:
             for line_no in range(len(present_lines)):
                 dot_file.write(present_lines[line_no])
-
-
