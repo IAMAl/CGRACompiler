@@ -377,7 +377,7 @@ def StLdMarker(r_file_path="./", r_file_name="@main()_bblock_12", w_file_path=".
         if ldld_paths != None:
             ldld_bpath.writelines(map(str, ldld_paths))
 
-def main_Geb_AMtoPath( prog ):
+def Main_Gen_AMtoPath( r_file_path, w_file_path, prog ):
     for func in prog.funcs:
         name_func = func.name.replace('\n', '')
 

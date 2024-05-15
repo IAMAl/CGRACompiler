@@ -1,4 +1,4 @@
-class type_chk:
+class Type_Check:
     """
     type checker
     "line":     read one line

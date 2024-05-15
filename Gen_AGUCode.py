@@ -1,3 +1,7 @@
+import .utils.ReadFile
+import .utils.ReadProgram
+import copy
+
 def ExtractNumber(element):
     """
     Extract Number (str) of Destination Register Index
@@ -231,13 +235,11 @@ class Create_CFGNode:
         for StLdPath in self.StLdPaths:
             StLdPath[1] = False
 
-
     def ReadNumPaths(self):
         """
         Read Number of Paths in Node
         """
         return self.num_paths
-
 
     def SetNodeID(self, ID):
         """
@@ -275,7 +277,6 @@ class Create_CFGNode:
         Read Flag of Explored
         """
         return self.Explored
-
 
     def SetNeighborNode(self, node_id):
         """
@@ -334,7 +335,6 @@ class Create_CFGNode:
                 for src_index in src_indices:
                     if src_index > 0:
                         Chk_Src = True
-
         return Chk_Src
 
     def ReadStLdPathExplored(self, path_no):
@@ -1730,7 +1730,7 @@ def AddrGen1(name, r_file_path, r_file_path1, r_file_path2, ):
         addr_gen_cfg_list.writelines(map(str, Programs))
 
 
-def AddrGen2(r_file_path, r_file_name, w_file_path, Programs):
+def AddrGen2(r_file_path, r_file_path1, r_file_path2, r_file_path3, w_file_path, Programs):
 
     # Read Load-Load Paths
     post_fix = "st_ld"
@@ -1741,12 +1741,8 @@ def AddrGen2(r_file_path, r_file_name, w_file_path, Programs):
     LdLdPaths = ReadLdLdPath( r_file_path, post_fix, Programs )
     LdLdPaths = LdLdPathChecker( Programs, LdLdPaths )
 
-    r_file_path = "../temp/llvmcdfggen/"
-    r_file_path2 = "../temp/cdfgamgen/"
-    r_file_path3 = "../temp/ampathgen/"
-
     # Generate LLVM-IR Code
-    LLVM_IR = AddrGen(r_file_path=r_file_path, r_file_path2=r_file_path2, r_file_path3=r_file_path3, r_file_name=name, Programs=Programs, StLd_Paths=StLdPaths, LdLdPaths=LdLdPaths, NM_List=NM_List )
+    LLVM_IR = AddrGen(r_file_path=r_file_path1, r_file_path2=r_file_path2, r_file_path3=r_file_path3, r_file_name=name, Programs=Programs, StLd_Paths=StLdPaths, LdLdPaths=LdLdPaths, NM_List=NM_List )
 
     LLVM_IR = DuplicatedDFGNodeRemover( LLVM_IR )
 
@@ -1990,12 +1986,12 @@ def CFGNodeMerger(r_file_path, r_file_name):
 
     return bblocks
 
-def cfg_nodemerger(r_file_path, r_file_name, w_file_path):
-    w_file_name = r_file_name
+
+def Main_Gen_AGUCode(r_file_path, r_file_name, w_file_path, w_file_name):
 
     bblocks = CFGNodeMerger(r_file_path, r_file_name)
+
     with open(w_file_path+w_file_name, 'w') as file:
         for bblock in bblocks:
             for instr in bblock:
                 file.write(instr)
-

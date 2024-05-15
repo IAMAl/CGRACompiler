@@ -15,4 +15,3 @@ def ReadFile( file_path="./", file_name="mvm_cfg_loop.txt" ):
             lines.append(line)
 
         return lines
-    

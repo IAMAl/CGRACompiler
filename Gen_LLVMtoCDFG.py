@@ -1,7 +1,14 @@
+import .utils.InstrTypeCheck.Type_Check
+import .utils.ReadProgram
+
+DEBUG = True
+
 def instr_parser(instr):
     """
     Instruction Parser
     """
+    type_chk = Type_Check()
+
     operands = []
     if type_chk.is_br(instr):
         # Conditional Branch Instruction
@@ -1576,45 +1583,49 @@ def cfg_extractor(r=None, prog=prog, out=None):
         out.write("}")
 
 
-with open("../temp/llvmcdfggen/"+prog.name + "_cfg.dot", "w") as out:
-    # Graph Utilities
-    g_cfg = GraphUtils(out, total_num_instrs)
+def Main_Gen_LLVMtoCDFG(r_file_path, r_file_name):
 
-    # Graph Header Description
-    g_cfg.start_cf_graph()
-    cfg_extractor(r=r, prog=prog, out=out)
+    prog = ReadProgram(r_file_path, r_file_name)
 
-def dupl_remover(dir_ll, dot_file_name, prog):
-    dot_file_name = prog.name+"_cfg.dot"
-    openfile = dir_ll + dot_file_name
+    with open("../temp/llvmcdfggen/"+prog.name + "_cfg.dot", "w") as out:
+        # Graph Utilities
+        g_cfg = GraphUtils(out, total_num_instrs)
 
-    present_lines = []
-    lines = []
-    num_dup = 0
+        # Graph Header Description
+        g_cfg.start_cf_graph()
+        cfg_extractor(r=r, prog=prog, out=out)
 
-    with open(openfile, "r") as dot_file:
-        for present_line in dot_file:
-            present_lines.append(present_line)
+    def dupl_remover(dir_ll, dot_file_name, prog):
+        dot_file_name = prog.name+"_cfg.dot"
+        openfile = dir_ll + dot_file_name
 
-    # Seek Same Line with Scan-Line Method
-    for present_no, present_line in enumerate(present_lines):
-        for compare_no, compare_line in enumerate(present_lines):
-            if compare_no == 0:
-                lines.append(present_line)
-            elif compare_line == present_line and compare_no != present_no:
-                #print("duplicated.")
-                num_dup += 1
-                start_no = present_no+compare_no
-                for index_no in range(start_no, len(present_lines)-1, 1):
-                    present_lines[index_no] = present_lines[index_no+1]
+        present_lines = []
+        lines = []
+        num_dup = 0
 
-                present_lines[len(present_lines)-1] = ""
+        with open(openfile, "r") as dot_file:
+            for present_line in dot_file:
+                present_lines.append(present_line)
 
-    print("Total {} lines removed.".format(num_dup))
+        # Seek Same Line with Scan-Line Method
+        for present_no, present_line in enumerate(present_lines):
+            for compare_no, compare_line in enumerate(present_lines):
+                if compare_no == 0:
+                    lines.append(present_line)
+                elif compare_line == present_line and compare_no != present_no:
+                    #print("duplicated.")
+                    num_dup += 1
+                    start_no = present_no+compare_no
+                    for index_no in range(start_no, len(present_lines)-1, 1):
+                        present_lines[index_no] = present_lines[index_no+1]
 
-    dot_file_name = "../temp/llvmcdfggen/"+prog.name+"_cfg_r.dot"
-    with open(dot_file_name, "w") as dot_file:
-        for line_no in range(len(present_lines)):
-            dot_file.write(present_lines[line_no])
+                    present_lines[len(present_lines)-1] = ""
+
+        print("Total {} lines removed.".format(num_dup))
+
+        dot_file_name = "../temp/llvmcdfggen/"+prog.name+"_cfg_r.dot"
+        with open(dot_file_name, "w") as dot_file:
+            for line_no in range(len(present_lines)):
+                dot_file.write(present_lines[line_no])
 
 
