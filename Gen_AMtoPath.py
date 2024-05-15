@@ -1,7 +1,5 @@
 import utils.ProgReader
 
-PATH_FORMAT = False
-
 def TraceBack(am, row_no, paths, stack_a, stack_b):
     """
     Back Tracker
@@ -143,7 +141,8 @@ def BackPathGen(PATH_FORMAT=False, r_file_path="./", r_file_name="@main()_bblock
             bpath.write("there is no path")
 
 
-def testBackPathGen( prog ):
+def Gen_BackPath( PATH_FORMAT, r_file_path, r_file_name, w_file_path ):
+    prog = prog = ProgReader( r_file_path=r_file_path, r_file_name=r_file_name )
     for func in prog.funcs:
         name_func = func.name.replace('\n', '')
 
@@ -152,7 +151,7 @@ def testBackPathGen( prog ):
             r_file_name = name_func+"_bblock_"+name_bblock
             w_file_name = name_func+"_bblock_"+name_bblock
 
-            BackPathGen(PATH_FORMAT=PATH_FORMAT, r_file_path=r_file_path2, r_file_name=r_file_name, w_file_path=w_file_path, w_file_name=w_file_name)
+            BackPathGen(PATH_FORMAT=PATH_FORMAT, r_file_path=r_file_path, r_file_name=r_file_name, w_file_path=w_file_path, w_file_name=w_file_name)
 
 
 def RootFinder(paths, path, node_id):
