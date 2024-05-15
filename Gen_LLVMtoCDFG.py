@@ -1,5 +1,5 @@
 import .utils.InstrTypeCheck.Type_Check
-import .utils.ReadProgram
+import utils.ProgramReader
 
 DEBUG = True
 

@@ -1,5 +1,5 @@
-import .utils.ReadFile
-import .utils.ReadProgram
+import utils.FileReader
+import utils.ProgramReader
 import copy
 
 def ExtractNumber(element):
