@@ -1,6 +1,6 @@
 import utils.ProgReader
 
-def TraceBack(am, row_no, paths, stack_a, stack_b):
+def TraceBack( am, row_no, paths, stack_a, stack_b ):
     """
     Back Tracker
 
@@ -56,7 +56,7 @@ def TraceBack(am, row_no, paths, stack_a, stack_b):
     return paths
 
 
-def TraceFormatter(paths):
+def TraceFormatter( paths ):
     paths_ = []
     for index, path in enumerate(paths):
         for chk_index in range(index+1, len(paths), +1):
@@ -67,7 +67,7 @@ def TraceFormatter(paths):
     return paths_
 
 
-def BackPathGen(PATH_FORMAT=False, r_file_path="./", r_file_name="@main()_bblock_15", w_file_path="./", w_file_name="@main()_bblock_15"):
+def BackPathGen( PATH_FORMAT=False, r_file_path="./", r_file_name="@main()_bblock_15", w_file_path="./", w_file_name="@main()_bblock_15" ):
     """
     Back Path Generator
 
@@ -154,7 +154,7 @@ def Gen_BackPath( PATH_FORMAT, r_file_path, r_file_name, w_file_path ):
             BackPathGen(PATH_FORMAT=PATH_FORMAT, r_file_path=r_file_path, r_file_name=r_file_name, w_file_path=w_file_path, w_file_name=w_file_name)
 
 
-def RootFinder(paths, path, node_id):
+def RootFinder( paths, path, node_id ):
     """
     Find Root-Node
     """
@@ -181,7 +181,7 @@ def RootFinder(paths, path, node_id):
     return path, index_
 
 
-def Merger(st_root_paths, stld_paths):
+def Merger( st_root_paths, stld_paths ):
     """
     Path Merger
     """
@@ -216,7 +216,7 @@ def Merger(st_root_paths, stld_paths):
         return stld_paths
 
 
-def StLdMarker(r_file_path="./", r_file_name="@main()_bblock_12", w_file_path="./", w_file_name="@main()_bblock_12"):
+def StLdMarker( r_file_path="./", r_file_name="@main()_bblock_12", w_file_path="./", w_file_name="@main()_bblock_12" ):
     """
     Store&Load Marker
 
@@ -372,8 +372,8 @@ def StLdMarker(r_file_path="./", r_file_name="@main()_bblock_12", w_file_path=".
             ldld_bpath.writelines(map(str, ldld_paths))
 
 
-def Main_Gen_AMtoPath( r_file_path, r_file_name, w_file_path):
-    
+def Main_Gen_AMtoPath( r_file_path, r_file_name, w_file_path ):
+
     prog = ProgReader( r_file_path=r_file_path, r_file_name=r_file_name )
     for func in prog.funcs:
         name_func = func.name.replace('\n', '')
