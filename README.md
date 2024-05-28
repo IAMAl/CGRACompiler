@@ -1,1 +1,1 @@
-# CGRA Compiler
+# Compiler for Electron Nest
