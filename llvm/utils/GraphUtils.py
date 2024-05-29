@@ -2,18 +2,18 @@ class GraphUtils:
     """
     Utilities for Graph-Drawing
     """
-    def __init__(self, out, total_num_instr):
+    def __init__( self, out, total_num_instr ):
         self.count = 0
         self.edges = []
         self.out = out
 
-    def write(self, line=""):
+    def write( self, line="" ):
         """
         Module for writing into a file
         """
         self.out.write(line + "\n")
 
-    def start_df_graph(self):
+    def start_df_graph( self ):
         """
         dot-file header descriptor for dfg
         """
@@ -21,7 +21,7 @@ class GraphUtils:
         self.write("compound=true")
         self.write('label="Black Edges - Data-Flow"')
 
-    def start_cf_graph(self):
+    def start_cf_graph( self ):
         """
         dot-file header descriptor for cfg
         """
@@ -29,7 +29,7 @@ class GraphUtils:
         self.write("compound=true")
         self.write('label="Red Edges - Jump, Blue - Taken, Green - NOT Taken"')
 
-    def edge(self, fro, to, extra=""):
+    def edge( self, fro, to, extra="" ):
         """
         edge descriptor
         source node to destination node
@@ -37,8 +37,8 @@ class GraphUtils:
         """
         self.edges.append("\"%s\" -> \"%s\"%s" % (fro, to, extra))
 
-    def Count(self):
+    def Count( self ):
         self.count += 1
 
-    def ReadCnt(self):
+    def ReadCnt( self ):
         return self.count

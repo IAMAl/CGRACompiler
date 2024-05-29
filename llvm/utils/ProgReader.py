@@ -1,6 +1,6 @@
 import utils.ProgConstructor as ProgConstructor
 
-def ProgReader( r_file_path="./", r_file_name="mvm_program"):
+def ProgReader( r_file_path="./", r_file_name="mvm_program" ):
     """
     Program File Read and Composition
 
